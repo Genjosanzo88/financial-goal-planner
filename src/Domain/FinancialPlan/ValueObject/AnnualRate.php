@@ -11,10 +11,10 @@ final class AnnualRate
     public function __construct(
         private readonly float $percentage
     ) {
-        // Una rentabilidad no puede ser inferior a -100 %.
-        if ($percentage < -100) {
+        // En este simulador trabajamos únicamente con escenarios de crecimiento.
+        if ($percentage < 0) {
             throw new InvalidArgumentException(
-                'Annual rate cannot be lower than -100%.'
+                'Annual rate cannot be negative.'
             );
         }
     }

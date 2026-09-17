@@ -24,10 +24,10 @@ final class AnnualRateTest extends TestCase
         self::assertSame(0.05, $rate->decimal());
     }
 
-    public function test_it_rejects_rates_lower_than_minus_one_hundred_percent(): void
+    public function test_it_rejects_negative_rates(): void
     {
         $this->expectException(InvalidArgumentException::class);
 
-        new AnnualRate(-101);
+        new AnnualRate(-1);
     }
 }

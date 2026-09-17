@@ -13,6 +13,15 @@ $path = parse_url(
     PHP_URL_PATH
 );
 
+// Página principal de la aplicación.
+if ($method === 'GET' && $path === '/') {
+    header('Content-Type: text/html; charset=utf-8');
+
+    readfile(__DIR__ . '/index.html');
+
+    return;
+}
+
 if ($method === 'POST' && $path === '/api/plans') {
     try {
         $body = file_get_contents('php://input');

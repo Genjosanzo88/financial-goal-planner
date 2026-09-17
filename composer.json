@@ -1,0 +1,20 @@
+{
+    "name": "genjosanzo88/financial-goal-planner",
+    "description": "Financial goal planning demo application",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Francisco Quirós Torres",
+            "email": "fquirost@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}

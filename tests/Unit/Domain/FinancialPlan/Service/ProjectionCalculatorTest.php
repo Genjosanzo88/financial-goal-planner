@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Domain\FinancialPlan\Service;
 
+use App\Domain\FinancialPlan\Entity\FinancialPlan;
 use App\Domain\FinancialPlan\Service\ProjectionCalculator;
 use App\Domain\FinancialPlan\ValueObject\AnnualRate;
 use App\Domain\FinancialPlan\ValueObject\Money;
@@ -16,10 +17,17 @@ final class ProjectionCalculatorTest extends TestCase
     {
         $calculator = new ProjectionCalculator();
 
-        $projection = $calculator->calculate(
+        $plan = new FinancialPlan(
+            'Laura García',
+            'Comprar vivienda',
+            new Money(100000),
             new Money(12000),
             new Money(300),
-            new Years(1),
+            new Years(1)
+        );
+
+        $projection = $calculator->calculate(
+            $plan,
             new AnnualRate(0)
         );
 
@@ -43,10 +51,17 @@ final class ProjectionCalculatorTest extends TestCase
     {
         $calculator = new ProjectionCalculator();
 
-        $projection = $calculator->calculate(
+        $plan = new FinancialPlan(
+            'Laura García',
+            'Comprar vivienda',
+            new Money(100000),
             new Money(12000),
             new Money(300),
-            new Years(15),
+            new Years(15)
+        );
+
+        $projection = $calculator->calculate(
+            $plan,
             new AnnualRate(5)
         );
 

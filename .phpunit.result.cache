@@ -1,0 +1,1 @@
+{"version":2,"defects":[],"times":{"Tests\\Unit\\Domain\\FinancialPlan\\ValueObject\\MoneyTest::test_it_stores_a_valid_amount":0.012,"Tests\\Unit\\Domain\\FinancialPlan\\ValueObject\\MoneyTest::test_it_rejects_negative_amounts":0}}

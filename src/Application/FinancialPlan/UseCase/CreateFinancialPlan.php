@@ -14,6 +14,8 @@ use App\Domain\FinancialPlan\Service\TimeToTargetCalculator;
 use App\Domain\FinancialPlan\ValueObject\AnnualRate;
 use App\Domain\FinancialPlan\ValueObject\Money;
 use App\Domain\FinancialPlan\ValueObject\Years;
+use App\Application\FinancialPlan\DTO\ScenarioOutput;
+use App\Domain\FinancialPlan\Service\ProjectionTimelineCalculator;
 
 final class CreateFinancialPlan
 {
@@ -21,7 +23,8 @@ final class CreateFinancialPlan
         private readonly FinancialPlanRepository $repository,
         private readonly ProjectionCalculator $projectionCalculator,
         private readonly RequiredContributionCalculator $requiredContributionCalculator,
-        private readonly TimeToTargetCalculator $timeToTargetCalculator
+        private readonly TimeToTargetCalculator $timeToTargetCalculator,
+        private readonly ProjectionTimelineCalculator $projectionTimelineCalculator
     ) {
     }
 
@@ -62,6 +65,67 @@ final class CreateFinancialPlan
                 $plan->years()->months() - $monthsToTarget;
         }
 
+        $scenarioDefinitions = [
+            ['name' => 'Conservador', 'rate' => 3.0],
+            ['name' => 'Moderado', 'rate' => 5.0],
+            ['name' => 'Dinámico', 'rate' => 7.0],
+        ];
+
+        $scenarios = [];
+
+        foreach ($scenarioDefinitions as $definition) {
+            $scenarioRate = new AnnualRate(
+                $definition['rate']
+            );
+
+            $scenarioProjection =
+                $this->projectionCalculator->calculate(
+                    $plan,
+                    $scenarioRate
+                );
+
+            $scenarioRequiredContribution =
+                $this->requiredContributionCalculator->calculate(
+                    $plan,
+                    $scenarioRate
+                );
+
+            $scenarioMonths =
+                $this->timeToTargetCalculator->calculate(
+                    $plan,
+                    $scenarioRate
+                );
+
+            $scenarioDifference = null;
+
+            if ($scenarioMonths !== null) {
+                $scenarioDifference =
+                    $plan->years()->months() - $scenarioMonths;
+            }
+
+            $scenarios[] = new ScenarioOutput(
+                name: $definition['name'],
+                annualRate: $definition['rate'],
+                finalCapital: $scenarioProjection
+                    ->finalCapital()
+                    ->amount(),
+                totalContributed: $scenarioProjection
+                    ->totalContributed()
+                    ->amount(),
+                estimatedReturn: $scenarioProjection
+                    ->estimatedReturn()
+                    ->amount(),
+                requiredMonthlyContribution:
+                $scenarioRequiredContribution->amount(),
+                targetReached:
+                $plan->isTargetReached($scenarioProjection),
+                monthsToTarget: $scenarioMonths,
+                timeDifferenceMonths: $scenarioDifference,
+                timeline: $this->projectionTimelineCalculator
+                    ->calculate($plan, $scenarioRate)
+            );
+        }
+
         $this->repository->save($plan);
 
         return new FinancialPlanOutput(
@@ -78,7 +142,8 @@ final class CreateFinancialPlan
             requiredMonthlyContribution: $requiredContribution->amount(),
             targetReached: $plan->isTargetReached($projection),
             monthsToTarget: $monthsToTarget,
-            timeDifferenceMonths: $timeDifferenceMonths
+            timeDifferenceMonths: $timeDifferenceMonths,
+            scenarios: $scenarios
         );
     }
 }

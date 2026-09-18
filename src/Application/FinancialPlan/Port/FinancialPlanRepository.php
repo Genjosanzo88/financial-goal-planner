@@ -9,4 +9,9 @@ use App\Domain\FinancialPlan\Entity\FinancialPlan;
 interface FinancialPlanRepository
 {
     public function save(FinancialPlan $plan): void;
+
+    /**
+     * @return FinancialPlan[]
+     */
+    public function findRecent(int $limit = 5): array;
 }

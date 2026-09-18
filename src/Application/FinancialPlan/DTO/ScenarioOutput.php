@@ -4,15 +4,10 @@ declare(strict_types=1);
 
 namespace App\Application\FinancialPlan\DTO;
 
-final class FinancialPlanOutput
+final class ScenarioOutput
 {
     public function __construct(
-        public readonly string $clientName,
-        public readonly string $goalName,
-        public readonly float $targetAmount,
-        public readonly float $initialCapital,
-        public readonly float $monthlyContribution,
-        public readonly int $years,
+        public readonly string $name,
         public readonly float $annualRate,
         public readonly float $finalCapital,
         public readonly float $totalContributed,
@@ -21,7 +16,7 @@ final class FinancialPlanOutput
         public readonly bool $targetReached,
         public readonly ?int $monthsToTarget,
         public readonly ?int $timeDifferenceMonths,
-        public readonly array $scenarios
+        public readonly array $timeline
     ) {
     }
 }

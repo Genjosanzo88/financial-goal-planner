@@ -10,6 +10,7 @@ use App\Domain\FinancialPlan\Service\ProjectionCalculator;
 use App\Domain\FinancialPlan\Service\RequiredContributionCalculator;
 use App\Domain\FinancialPlan\Service\TimeToTargetCalculator;
 use App\Domain\FinancialPlan\ValueObject\AnnualRate;
+use App\Domain\FinancialPlan\Service\ProjectionTimelineCalculator;
 use PHPUnit\Framework\TestCase;
 
 final class CreateFinancialPlanTest extends TestCase
@@ -22,7 +23,8 @@ final class CreateFinancialPlanTest extends TestCase
             $repository,
             new ProjectionCalculator(),
             new RequiredContributionCalculator(),
-            new TimeToTargetCalculator()
+            new TimeToTargetCalculator(),
+            new ProjectionTimelineCalculator()
         );
 
         $input = new CreateFinancialPlanInput(

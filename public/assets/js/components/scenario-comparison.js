@@ -2,9 +2,7 @@ class ScenarioComparison extends HTMLElement {
     connectedCallback() {
         document.addEventListener(
             'financial-plan-created',
-            (event) => {
-                this.render(event.detail);
-            }
+            (event) => this.render(event.detail)
         );
     }
 
@@ -57,23 +55,69 @@ class ScenarioComparison extends HTMLElement {
             return `${this.formatDuration(months)} antes`;
         }
 
-        return `${this.formatDuration(Math.abs(months))} después`;
+        return `${this.formatDuration(
+            Math.abs(months)
+        )} después`;
+    }
+
+    escapeHtml(value) {
+        return String(value).replace(
+            /[&<>"']/g,
+            (character) => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            })[character]
+        );
     }
 
     render(plan) {
         const difference =
             plan.finalCapital - plan.targetAmount;
 
-        const selectedHorizon =
-            this.formatDuration(plan.years * 12);
+        const scenariosHtml = plan.scenarios
+            .map((scenario) => `
+                <article class="scenario">
+                    <div class="scenario-title">
+                        <strong>
+                            ${this.escapeHtml(scenario.name)}
+                        </strong>
 
-        const realTime =
-            this.formatDuration(plan.monthsToTarget);
+                        <span>
+                            ${scenario.annualRate} %
+                        </span>
+                    </div>
 
-        const timeDifference =
-            this.formatTimeDifference(
-                plan.timeDifferenceMonths
-            );
+                    <div class="scenario-capital">
+                        ${this.formatCurrency(
+                            scenario.finalCapital
+                        )}
+                    </div>
+
+                    <div class="scenario-status">
+                        ${
+                            scenario.targetReached
+                                ? 'Objetivo alcanzado'
+                                : 'Objetivo no alcanzado'
+                        }
+                    </div>
+
+                    <small>
+                        ${this.formatDuration(
+                            scenario.monthsToTarget
+                        )}
+                    </small>
+
+                    <small>
+                        ${this.formatTimeDifference(
+                            scenario.timeDifferenceMonths
+                        )}
+                    </small>
+                </article>
+            `)
+            .join('');
 
         this.innerHTML = `
             <section class="card results">
@@ -81,8 +125,14 @@ class ScenarioComparison extends HTMLElement {
                 <div class="results-header">
                     <div>
                         <p class="eyebrow">Resultado</p>
-                        <h2>${plan.goalName}</h2>
-                        <p>${plan.clientName}</p>
+
+                        <h2>
+                            ${this.escapeHtml(plan.goalName)}
+                        </h2>
+
+                        <p>
+                            ${this.escapeHtml(plan.clientName)}
+                        </p>
                     </div>
 
                     <span class="status">
@@ -119,7 +169,9 @@ class ScenarioComparison extends HTMLElement {
                             ${
                                 difference >= 0
                                     ? `+${this.formatCurrency(difference)} sobre el objetivo`
-                                    : `${this.formatCurrency(Math.abs(difference))} por debajo`
+                                    : `${this.formatCurrency(
+                                        Math.abs(difference)
+                                    )} por debajo`
                             }
                         </small>
                     </article>
@@ -128,19 +180,27 @@ class ScenarioComparison extends HTMLElement {
                         <span>Horizonte elegido</span>
 
                         <strong>
-                            ${selectedHorizon}
+                            ${this.formatDuration(
+                                plan.years * 12
+                            )}
                         </strong>
                     </article>
 
                     <article>
-                        <span>Tiempo para alcanzar el objetivo</span>
+                        <span>
+                            Tiempo para alcanzar el objetivo
+                        </span>
 
                         <strong>
-                            ${realTime}
+                            ${this.formatDuration(
+                                plan.monthsToTarget
+                            )}
                         </strong>
 
                         <small>
-                            ${timeDifference}
+                            ${this.formatTimeDifference(
+                                plan.timeDifferenceMonths
+                            )}
                         </small>
                     </article>
 
@@ -150,7 +210,6 @@ class ScenarioComparison extends HTMLElement {
 
                     <article>
                         <span>Total aportado</span>
-
                         <strong>
                             ${this.formatCurrency(
                                 plan.totalContributed
@@ -160,7 +219,6 @@ class ScenarioComparison extends HTMLElement {
 
                     <article>
                         <span>Rentabilidad estimada</span>
-
                         <strong>
                             ${this.formatCurrency(
                                 plan.estimatedReturn
@@ -170,7 +228,6 @@ class ScenarioComparison extends HTMLElement {
 
                     <article>
                         <span>Aportación mensual</span>
-
                         <strong>
                             ${this.formatCurrency(
                                 plan.monthlyContribution
@@ -180,7 +237,6 @@ class ScenarioComparison extends HTMLElement {
 
                     <article>
                         <span>Aportación necesaria</span>
-
                         <strong>
                             ${this.formatCurrency(
                                 plan.requiredMonthlyContribution
@@ -188,6 +244,22 @@ class ScenarioComparison extends HTMLElement {
                         </strong>
                     </article>
 
+                </div>
+
+                <div class="scenario-section">
+                    <div class="section-heading">
+                        <p class="eyebrow">
+                            Escenarios
+                        </p>
+
+                        <h3>
+                            Comparación de rentabilidad
+                        </h3>
+                    </div>
+
+                    <div class="scenario-grid">
+                        ${scenariosHtml}
+                    </div>
                 </div>
 
             </section>

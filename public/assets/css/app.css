@@ -167,6 +167,153 @@ button:hover {
     font-size: 1rem;
 }
 
+.scenario-section {
+    margin-top: 36px;
+    padding-top: 28px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.section-heading {
+    margin-bottom: 20px;
+}
+
+.section-heading h3 {
+    margin: 4px 0 0;
+}
+
+.scenario-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.scenario {
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.scenario-title {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.scenario-title span {
+    color: #6b7280;
+}
+
+.scenario-capital {
+    margin-bottom: 8px;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.scenario-status {
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.scenario small {
+    display: block;
+    margin-top: 4px;
+    color: #6b7280;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.chart-header h2 {
+    margin-bottom: 0;
+}
+
+.chart-legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    color: #6b7280;
+    font-size: 0.85rem;
+}
+
+.chart-container {
+    width: 100%;
+    margin-top: 28px;
+    overflow-x: auto;
+}
+
+.chart-container svg {
+    width: 100%;
+    min-width: 600px;
+}
+
+.chart-label {
+    fill: #6b7280;
+    font-size: 13px;
+}
+
+.target-line {
+    stroke: #9ca3af;
+    stroke-width: 2;
+    stroke-dasharray: 7 7;
+}
+
+.projection-line-0 {
+    stroke: #64748b;
+}
+
+.projection-line-1 {
+    stroke: #4f46e5;
+}
+
+.projection-line-2 {
+    stroke: #059669;
+}
+
+.chart-note {
+    margin-bottom: 0;
+    color: #6b7280;
+    font-size: 0.85rem;
+}
+
+.recent-plans {
+    display: grid;
+    gap: 1px;
+    margin-top: 20px;
+    background: #e5e7eb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.recent-plan {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 16px 18px;
+    background: #ffffff;
+}
+
+.recent-plan div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.recent-plan div:last-child {
+    text-align: right;
+}
+
+.recent-plan span {
+    color: #6b7280;
+    font-size: 0.85rem;
+}
+
 @media (max-width: 700px) {
     .form-grid,
     .primary-results,
@@ -176,5 +323,21 @@ button:hover {
 
     .results-header {
         flex-direction: column;
+    }
+
+    .scenario-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-header {
+        flex-direction: column;
+    }
+
+    .recent-plan {
+            flex-direction: column;
+        }
+
+    .recent-plan div:last-child {
+        text-align: left;
     }
 }

@@ -50,7 +50,9 @@ final class CreateFinancialPlanController
 
             $result = $this->createFinancialPlan->execute(
                 $input,
-                new AnnualRate((float) $data['annualRate'])
+                new AnnualRate(
+                    (float) $data['annualRate']
+                )
             );
         } catch (InvalidArgumentException $exception) {
             return new JsonResponse(
@@ -65,17 +67,65 @@ final class CreateFinancialPlanController
                 'goalName' => $result->goalName,
                 'targetAmount' => $result->targetAmount,
                 'initialCapital' => $result->initialCapital,
-                'monthlyContribution' => $result->monthlyContribution,
+                'monthlyContribution' =>
+                    $result->monthlyContribution,
                 'years' => $result->years,
                 'annualRate' => $result->annualRate,
+
                 'finalCapital' => $result->finalCapital,
-                'totalContributed' => $result->totalContributed,
-                'estimatedReturn' => $result->estimatedReturn,
+                'totalContributed' =>
+                    $result->totalContributed,
+                'estimatedReturn' =>
+                    $result->estimatedReturn,
+
                 'requiredMonthlyContribution' =>
                     $result->requiredMonthlyContribution,
-                'targetReached' => $result->targetReached,
-                'monthsToTarget' => $result->monthsToTarget,
-                'timeDifferenceMonths' => $result->timeDifferenceMonths,
+
+                'targetReached' =>
+                    $result->targetReached,
+
+                'monthsToTarget' =>
+                    $result->monthsToTarget,
+
+                'timeDifferenceMonths' =>
+                    $result->timeDifferenceMonths,
+
+                'scenarios' => array_map(
+                    static fn ($scenario): array => [
+                        'name' =>
+                            $scenario->name,
+
+                        'annualRate' =>
+                            $scenario->annualRate,
+
+                        'finalCapital' =>
+                            $scenario->finalCapital,
+
+                        'totalContributed' =>
+                            $scenario->totalContributed,
+
+                        'estimatedReturn' =>
+                            $scenario->estimatedReturn,
+
+                        'requiredMonthlyContribution' =>
+                            $scenario
+                                ->requiredMonthlyContribution,
+
+                        'targetReached' =>
+                            $scenario->targetReached,
+
+                        'monthsToTarget' =>
+                            $scenario->monthsToTarget,
+
+                        'timeDifferenceMonths' =>
+                            $scenario
+                                ->timeDifferenceMonths,
+
+                        'timeline' =>
+                            $scenario->timeline,
+                    ],
+                    $result->scenarios
+                ),
             ],
             201
         );

@@ -13,7 +13,7 @@ $path = parse_url(
     PHP_URL_PATH
 );
 
-// Página principal de la aplicación.
+// Página principal.
 if ($method === 'GET' && $path === '/') {
     header('Content-Type: text/html; charset=utf-8');
 
@@ -22,6 +22,7 @@ if ($method === 'GET' && $path === '/') {
     return;
 }
 
+// Crear un plan.
 if ($method === 'POST' && $path === '/api/plans') {
     try {
         $body = file_get_contents('php://input');
@@ -33,16 +34,32 @@ if ($method === 'POST' && $path === '/api/plans') {
             JSON_THROW_ON_ERROR
         );
 
-        $controller = require dirname(__DIR__)
+        if (!is_array($data)) {
+            throw new JsonException(
+                'JSON body must be an object.'
+            );
+        }
+
+        $controllers = require dirname(__DIR__)
             . '/config/bootstrap.php';
 
-        $controller($data)->send();
+        $controllers['create']($data)->send();
     } catch (JsonException) {
         (new JsonResponse(
             ['error' => 'Invalid JSON body.'],
             400
         ))->send();
     }
+
+    return;
+}
+
+// Consultar los últimos planes.
+if ($method === 'GET' && $path === '/api/plans') {
+    $controllers = require dirname(__DIR__)
+        . '/config/bootstrap.php';
+
+    $controllers['list']()->send();
 
     return;
 }

@@ -17,3 +17,17 @@ export async function createFinancialPlan(data) {
 
     return result;
 }
+
+export async function getFinancialPlans() {
+    const response = await fetch('/api/plans');
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(
+            result.error ?? 'Unable to load financial plans.'
+        );
+    }
+
+    return result.items;
+}

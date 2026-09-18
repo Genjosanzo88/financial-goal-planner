@@ -1,4 +1,6 @@
-import { createFinancialPlan } from '../api/financial-plan-api.js';
+import {
+    createFinancialPlan
+} from '../api/financial-plan-api.js';
 
 class FinancialPlanForm extends HTMLElement {
     connectedCallback() {
@@ -13,8 +15,10 @@ class FinancialPlanForm extends HTMLElement {
 
                 <form id="financial-plan-form">
                     <div class="form-grid">
+
                         <label>
                             Nombre del cliente
+
                             <input
                                 name="clientName"
                                 type="text"
@@ -25,6 +29,7 @@ class FinancialPlanForm extends HTMLElement {
 
                         <label>
                             Objetivo
+
                             <input
                                 name="goalName"
                                 type="text"
@@ -35,6 +40,7 @@ class FinancialPlanForm extends HTMLElement {
 
                         <label>
                             Objetivo económico (€)
+
                             <input
                                 name="targetAmount"
                                 type="number"
@@ -47,6 +53,7 @@ class FinancialPlanForm extends HTMLElement {
 
                         <label>
                             Capital inicial (€)
+
                             <input
                                 name="initialCapital"
                                 type="number"
@@ -59,6 +66,7 @@ class FinancialPlanForm extends HTMLElement {
 
                         <label>
                             Aportación mensual (€)
+
                             <input
                                 name="monthlyContribution"
                                 type="number"
@@ -71,10 +79,12 @@ class FinancialPlanForm extends HTMLElement {
 
                         <label>
                             Horizonte (años)
+
                             <input
                                 name="years"
                                 type="number"
                                 min="1"
+                                step="1"
                                 value="15"
                                 required
                             >
@@ -82,6 +92,7 @@ class FinancialPlanForm extends HTMLElement {
 
                         <label>
                             Rentabilidad anual estimada (%)
+
                             <input
                                 name="annualRate"
                                 type="number"
@@ -91,56 +102,132 @@ class FinancialPlanForm extends HTMLElement {
                                 required
                             >
                         </label>
+
                     </div>
 
                     <button type="submit">
                         Calcular plan
                     </button>
 
-                    <p class="form-error" hidden></p>
+                    <p
+                        class="form-error"
+                        role="alert"
+                        hidden
+                    ></p>
                 </form>
             </section>
         `;
     }
 
     bindEvents() {
-        const form = this.querySelector('#financial-plan-form');
+        const form = this.querySelector(
+            '#financial-plan-form'
+        );
 
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
+        const errorElement = this.querySelector(
+            '.form-error'
+        );
 
-            const errorElement = this.querySelector('.form-error');
+        const button = form.querySelector(
+            'button[type="submit"]'
+        );
 
-            errorElement.hidden = true;
+        form.addEventListener(
+            'submit',
+            async (event) => {
+                event.preventDefault();
 
-            const formData = new FormData(form);
+                errorElement.hidden = true;
+                errorElement.textContent = '';
 
-            const data = {
-                clientName: formData.get('clientName'),
-                goalName: formData.get('goalName'),
-                targetAmount: Number(formData.get('targetAmount')),
-                initialCapital: Number(formData.get('initialCapital')),
-                monthlyContribution: Number(
-                    formData.get('monthlyContribution')
-                ),
-                years: Number(formData.get('years')),
-                annualRate: Number(formData.get('annualRate'))
-            };
+                const originalButtonText =
+                    button.textContent;
 
-            try {
-                const result = await createFinancialPlan(data);
+                button.disabled = true;
+                button.textContent = 'Calculando...';
 
-                this.dispatchEvent(
-                    new CustomEvent('financial-plan-created', {
-                        detail: result,
-                        bubbles: true
-                    })
+                form.setAttribute(
+                    'aria-busy',
+                    'true'
                 );
-            } catch (error) {
-                errorElement.textContent = error.message;
-                errorElement.hidden = false;
+
+                const formData = new FormData(form);
+
+                const data = {
+                    clientName:
+                        formData.get('clientName'),
+
+                    goalName:
+                        formData.get('goalName'),
+
+                    targetAmount:
+                        Number(
+                            formData.get(
+                                'targetAmount'
+                            )
+                        ),
+
+                    initialCapital:
+                        Number(
+                            formData.get(
+                                'initialCapital'
+                            )
+                        ),
+
+                    monthlyContribution:
+                        Number(
+                            formData.get(
+                                'monthlyContribution'
+                            )
+                        ),
+
+                    years:
+                        Number(
+                            formData.get('years')
+                        ),
+
+                    annualRate:
+                        Number(
+                            formData.get(
+                                'annualRate'
+                            )
+                        )
+                };
+
+                try {
+                    const result =
+                        await createFinancialPlan(
+                            data
+                        );
+
+                    this.dispatchEvent(
+                        new CustomEvent(
+                            'financial-plan-created',
+                            {
+                                detail: result,
+                                bubbles: true
+                            }
+                        )
+                    );
+                } catch (error) {
+                    errorElement.textContent =
+                        error instanceof Error
+                            ? error.message
+                            : 'Ha ocurrido un error inesperado.';
+
+                    errorElement.hidden = false;
+                } finally {
+                    button.disabled = false;
+
+                    button.textContent =
+                        originalButtonText;
+
+                    form.removeAttribute(
+                        'aria-busy'
+                    );
+                }
             }
-        });
+        );
     }
 }
 

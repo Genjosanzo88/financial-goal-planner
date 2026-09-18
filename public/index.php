@@ -6,6 +6,24 @@ use App\Presentation\Http\JsonResponse;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
+header('X-Content-Type-Options: nosniff');
+
+header('Referrer-Policy: no-referrer');
+
+header('X-Frame-Options: DENY');
+
+header(
+    "Content-Security-Policy: "
+    . "default-src 'self'; "
+    . "script-src 'self'; "
+    . "style-src 'self'; "
+    . "img-src 'self'; "
+    . "connect-src 'self'; "
+    . "base-uri 'none'; "
+    . "form-action 'self'; "
+    . "frame-ancestors 'none'"
+);
+
 $method = $_SERVER['REQUEST_METHOD'];
 
 $path = parse_url(

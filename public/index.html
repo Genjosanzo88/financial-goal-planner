@@ -1,39 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>Financial Goal Planner</title>
 
-    <link rel="stylesheet" href="/assets/css/app.css">
-</head>
+    <link rel="stylesheet" href="/assets/css/app.css" />
+  </head>
 
-<body>
+  <body>
     <main class="container">
-        <header class="page-header">
-            <p class="eyebrow">Financial planning</p>
+      <header class="page-header">
+        <p class="eyebrow">Financial planning</p>
 
-            <h1>Financial Goal Planner</h1>
+        <h1>Financial Goal Planner</h1>
 
-            <p>
-                Define un objetivo financiero y comprueba cómo puede
-                evolucionar tu capital.
-            </p>
-        </header>
+        <p>
+          Define un objetivo financiero y comprueba cómo puede evolucionar tu
+          capital.
+        </p>
+      </header>
 
-        <financial-plan-form></financial-plan-form>
+      <financial-plan-form></financial-plan-form>
 
-        <scenario-comparison></scenario-comparison>
+      <scenario-comparison></scenario-comparison>
 
-        <projection-chart></projection-chart>
+      <projection-chart></projection-chart>
 
-        <recent-plans></recent-plans>
+      <recent-plans></recent-plans>
+
+      <p class="disclaimer">
+        Las proyecciones son orientativas y utilizan una rentabilidad anual
+        constante. No incluyen inflación, impuestos, comisiones ni volatilidad
+        de mercado.
+      </p>
     </main>
 
-    <script
-        type="module"
-        src="/assets/js/app.js"
-    ></script>
-</body>
+    <script type="module" src="/assets/js/app.js"></script>
+  </body>
 </html>

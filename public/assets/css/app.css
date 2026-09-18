@@ -314,6 +314,20 @@ button:hover {
     font-size: 0.85rem;
 }
 
+button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.disclaimer {
+    max-width: 760px;
+    margin: 32px auto 0;
+    color: #6b7280;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    text-align: center;
+}
+
 @media (max-width: 700px) {
     .form-grid,
     .primary-results,

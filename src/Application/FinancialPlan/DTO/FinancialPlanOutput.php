@@ -18,7 +18,9 @@ final class FinancialPlanOutput
         public readonly float $totalContributed,
         public readonly float $estimatedReturn,
         public readonly float $requiredMonthlyContribution,
-        public readonly bool $targetReached
+        public readonly bool $targetReached,
+        public readonly ?int $monthsToTarget,
+        public readonly ?int $timeDifferenceMonths
     ) {
     }
 }

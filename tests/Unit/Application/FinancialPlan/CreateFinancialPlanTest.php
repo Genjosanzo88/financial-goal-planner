@@ -8,6 +8,7 @@ use App\Application\FinancialPlan\DTO\CreateFinancialPlanInput;
 use App\Application\FinancialPlan\UseCase\CreateFinancialPlan;
 use App\Domain\FinancialPlan\Service\ProjectionCalculator;
 use App\Domain\FinancialPlan\Service\RequiredContributionCalculator;
+use App\Domain\FinancialPlan\Service\TimeToTargetCalculator;
 use App\Domain\FinancialPlan\ValueObject\AnnualRate;
 use PHPUnit\Framework\TestCase;
 
@@ -20,7 +21,8 @@ final class CreateFinancialPlanTest extends TestCase
         $useCase = new CreateFinancialPlan(
             $repository,
             new ProjectionCalculator(),
-            new RequiredContributionCalculator()
+            new RequiredContributionCalculator(),
+            new TimeToTargetCalculator()
         );
 
         $input = new CreateFinancialPlanInput(
@@ -60,6 +62,16 @@ final class CreateFinancialPlanTest extends TestCase
         );
 
         self::assertTrue($result->targetReached);
+
+        self::assertSame(
+            173,
+            $result->monthsToTarget
+        );
+
+        self::assertSame(
+            7,
+            $result->timeDifferenceMonths
+        );
 
         self::assertNotNull(
             $repository->savedPlan

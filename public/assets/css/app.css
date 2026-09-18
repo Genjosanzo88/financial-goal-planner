@@ -117,41 +117,60 @@ button:hover {
     background: #eef2ff;
     font-weight: 600;
 }
-
-.result-grid {
+.primary-results {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
     margin-top: 32px;
 }
 
-.result-grid article {
-    padding: 16px;
+.primary-results article {
+    min-height: 125px;
+    padding: 20px;
     background: #f9fafb;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
-.result-grid span {
+.primary-results span,
+.secondary-results span {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     color: #6b7280;
     font-size: 0.85rem;
 }
 
-.result-grid strong {
-    font-size: 1.15rem;
+.primary-results strong {
+    display: block;
+    font-size: 1.45rem;
 }
 
-.difference {
+.primary-results small {
+    display: block;
+    margin-top: 8px;
+    color: #6b7280;
+}
+
+.secondary-results {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
     margin-top: 24px;
-    padding-top: 20px;
+    padding-top: 24px;
     border-top: 1px solid #e5e7eb;
-    font-weight: 600;
+}
+
+.secondary-results article {
+    padding: 4px;
+}
+
+.secondary-results strong {
+    font-size: 1rem;
 }
 
 @media (max-width: 700px) {
     .form-grid,
-    .result-grid {
+    .primary-results,
+    .secondary-results {
         grid-template-columns: 1fr;
     }
 

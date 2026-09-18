@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Application\FinancialPlan\UseCase\CreateFinancialPlan;
 use App\Domain\FinancialPlan\Service\ProjectionCalculator;
 use App\Domain\FinancialPlan\Service\RequiredContributionCalculator;
+use App\Domain\FinancialPlan\Service\TimeToTargetCalculator;
 use App\Infrastructure\Persistence\PDO\PdoFinancialPlanRepository;
 use App\Presentation\Http\Controller\CreateFinancialPlanController;
 
@@ -17,7 +18,8 @@ $repository = new PdoFinancialPlanRepository(
 $useCase = new CreateFinancialPlan(
     $repository,
     new ProjectionCalculator(),
-    new RequiredContributionCalculator()
+    new RequiredContributionCalculator(),
+    new TimeToTargetCalculator()
 );
 
 return new CreateFinancialPlanController(

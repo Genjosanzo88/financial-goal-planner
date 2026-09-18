@@ -8,19 +8,76 @@ class ScenarioComparison extends HTMLElement {
         );
     }
 
-    render(plan) {
-        const formatCurrency = (amount) => {
-            return new Intl.NumberFormat('es-ES', {
-                style: 'currency',
-                currency: 'EUR'
-            }).format(amount);
-        };
+    formatCurrency(amount) {
+        return new Intl.NumberFormat('es-ES', {
+            style: 'currency',
+            currency: 'EUR'
+        }).format(amount);
+    }
 
+    formatDuration(totalMonths) {
+        if (totalMonths === null) {
+            return 'No alcanzable';
+        }
+
+        if (totalMonths === 0) {
+            return 'Ya alcanzado';
+        }
+
+        const years = Math.floor(totalMonths / 12);
+        const months = totalMonths % 12;
+
+        const parts = [];
+
+        if (years > 0) {
+            parts.push(
+                `${years} ${years === 1 ? 'año' : 'años'}`
+            );
+        }
+
+        if (months > 0) {
+            parts.push(
+                `${months} ${months === 1 ? 'mes' : 'meses'}`
+            );
+        }
+
+        return parts.join(' y ');
+    }
+
+    formatTimeDifference(months) {
+        if (months === null) {
+            return 'No alcanzable con estas condiciones';
+        }
+
+        if (months === 0) {
+            return 'Justo en el horizonte previsto';
+        }
+
+        if (months > 0) {
+            return `${this.formatDuration(months)} antes`;
+        }
+
+        return `${this.formatDuration(Math.abs(months))} después`;
+    }
+
+    render(plan) {
         const difference =
             plan.finalCapital - plan.targetAmount;
 
+        const selectedHorizon =
+            this.formatDuration(plan.years * 12);
+
+        const realTime =
+            this.formatDuration(plan.monthsToTarget);
+
+        const timeDifference =
+            this.formatTimeDifference(
+                plan.timeDifferenceMonths
+            );
+
         this.innerHTML = `
             <section class="card results">
+
                 <div class="results-header">
                     <div>
                         <p class="eyebrow">Resultado</p>
@@ -37,59 +94,102 @@ class ScenarioComparison extends HTMLElement {
                     </span>
                 </div>
 
-                <div class="result-grid">
+                <div class="primary-results">
+
                     <article>
                         <span>Objetivo</span>
+
                         <strong>
-                            ${formatCurrency(plan.targetAmount)}
+                            ${this.formatCurrency(
+                                plan.targetAmount
+                            )}
                         </strong>
                     </article>
 
                     <article>
                         <span>Capital proyectado</span>
+
                         <strong>
-                            ${formatCurrency(plan.finalCapital)}
+                            ${this.formatCurrency(
+                                plan.finalCapital
+                            )}
+                        </strong>
+
+                        <small>
+                            ${
+                                difference >= 0
+                                    ? `+${this.formatCurrency(difference)} sobre el objetivo`
+                                    : `${this.formatCurrency(Math.abs(difference))} por debajo`
+                            }
+                        </small>
+                    </article>
+
+                    <article>
+                        <span>Horizonte elegido</span>
+
+                        <strong>
+                            ${selectedHorizon}
                         </strong>
                     </article>
 
                     <article>
-                        <span>Total aportado</span>
+                        <span>Tiempo para alcanzar el objetivo</span>
+
                         <strong>
-                            ${formatCurrency(plan.totalContributed)}
+                            ${realTime}
+                        </strong>
+
+                        <small>
+                            ${timeDifference}
+                        </small>
+                    </article>
+
+                </div>
+
+                <div class="secondary-results">
+
+                    <article>
+                        <span>Total aportado</span>
+
+                        <strong>
+                            ${this.formatCurrency(
+                                plan.totalContributed
+                            )}
                         </strong>
                     </article>
 
                     <article>
                         <span>Rentabilidad estimada</span>
+
                         <strong>
-                            ${formatCurrency(plan.estimatedReturn)}
+                            ${this.formatCurrency(
+                                plan.estimatedReturn
+                            )}
                         </strong>
                     </article>
 
                     <article>
-                        <span>Aportación actual</span>
+                        <span>Aportación mensual</span>
+
                         <strong>
-                            ${formatCurrency(plan.monthlyContribution)}
+                            ${this.formatCurrency(
+                                plan.monthlyContribution
+                            )}
                         </strong>
                     </article>
 
                     <article>
                         <span>Aportación necesaria</span>
+
                         <strong>
-                            ${formatCurrency(
+                            ${this.formatCurrency(
                                 plan.requiredMonthlyContribution
                             )}
                         </strong>
                     </article>
+
                 </div>
 
-                <div class="difference">
-                    ${
-                        difference >= 0
-                            ? `Superarías el objetivo en ${formatCurrency(difference)}.`
-                            : `Te faltarían ${formatCurrency(Math.abs(difference))}.`
-                    }
-                </div>
             </section>
         `;
     }

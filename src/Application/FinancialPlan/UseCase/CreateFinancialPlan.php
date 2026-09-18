@@ -10,6 +10,7 @@ use App\Application\FinancialPlan\Port\FinancialPlanRepository;
 use App\Domain\FinancialPlan\Entity\FinancialPlan;
 use App\Domain\FinancialPlan\Service\ProjectionCalculator;
 use App\Domain\FinancialPlan\Service\RequiredContributionCalculator;
+use App\Domain\FinancialPlan\Service\TimeToTargetCalculator;
 use App\Domain\FinancialPlan\ValueObject\AnnualRate;
 use App\Domain\FinancialPlan\ValueObject\Money;
 use App\Domain\FinancialPlan\ValueObject\Years;
@@ -19,7 +20,8 @@ final class CreateFinancialPlan
     public function __construct(
         private readonly FinancialPlanRepository $repository,
         private readonly ProjectionCalculator $projectionCalculator,
-        private readonly RequiredContributionCalculator $requiredContributionCalculator
+        private readonly RequiredContributionCalculator $requiredContributionCalculator,
+        private readonly TimeToTargetCalculator $timeToTargetCalculator
     ) {
     }
 
@@ -47,6 +49,19 @@ final class CreateFinancialPlan
                 $annualRate
             );
 
+        $monthsToTarget =
+            $this->timeToTargetCalculator->calculate(
+                $plan,
+                $annualRate
+            );
+
+        $timeDifferenceMonths = null;
+
+        if ($monthsToTarget !== null) {
+            $timeDifferenceMonths =
+                $plan->years()->months() - $monthsToTarget;
+        }
+
         $this->repository->save($plan);
 
         return new FinancialPlanOutput(
@@ -61,7 +76,9 @@ final class CreateFinancialPlan
             totalContributed: $projection->totalContributed()->amount(),
             estimatedReturn: $projection->estimatedReturn()->amount(),
             requiredMonthlyContribution: $requiredContribution->amount(),
-            targetReached: $plan->isTargetReached($projection)
+            targetReached: $plan->isTargetReached($projection),
+            monthsToTarget: $monthsToTarget,
+            timeDifferenceMonths: $timeDifferenceMonths
         );
     }
 }

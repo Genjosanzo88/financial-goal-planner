@@ -74,6 +74,8 @@ final class CreateFinancialPlanController
                 'requiredMonthlyContribution' =>
                     $result->requiredMonthlyContribution,
                 'targetReached' => $result->targetReached,
+                'monthsToTarget' => $result->monthsToTarget,
+                'timeDifferenceMonths' => $result->timeDifferenceMonths,
             ],
             201
         );
